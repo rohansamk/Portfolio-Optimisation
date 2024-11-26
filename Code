@@ -1,0 +1,42 @@
+## Import the necessary python libraries
+import json
+import requests
+import squarify
+import numpy as np
+import pandas as pd
+import yfinance as yf
+import seaborn as sns
+import scipy.optimize as sco
+import statsmodels.api as sm
+from bs4 import BeautifulSoup
+from datetime import datetime
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from matplotlib.colors import LinearSegmentedColormap
+
+## Setting pandas options for formatting the results
+pd.set_option('display.notebook_repr_html', True)
+pd.set_option('display.max_columns', 40)
+pd.set_option('display.max_rows', 50)
+pd.set_option('display.width', 100)
+# Extracting the Historical Data for all Stocks in the Broker Ledger
+symbols = ledger_df['Symbol'].tolist()
+
+# Define a function to fetch historical data from Yahoo Finance
+def fetch_historical_data(symbols, start_date='2022-01-01', end_date='2024-05-01'):
+    historical_data = {}
+    for symbol in symbols:
+        # Assume that the symbols are listed on the NSE
+        nse_symbol = f"{symbol}.NS"
+        # Fetch the historical data
+        #historical_data[symbol] = yf.download(nse_symbol, start=start_date, end=end_date)
+        data = yf.download(nse_symbol, start=start_date, end=end_date)
+        historical_data[symbol] = data
+
+        # Check for missing values in the data
+        if data.isnull().any().any():  # This checks if there's any missing value in any column
+            print(f"Missing values detected in {symbol}")
+    return historical_data
+
+# Fetch the historical data for the symbols
+historical_stock_data = fetch_historical_data(symbols)
